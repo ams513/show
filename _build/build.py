@@ -159,8 +159,8 @@ p{{margin:0 0 3pt}}b{{display:inline-block;min-width:44pt;font-size:8.5pt;letter
 if __name__ == "__main__":
     (ROOT / "index.html").write_text(index(), encoding="utf-8")
     pathlib.Path(sys.argv[2]).write_text(cheat(), encoding="utf-8")
-    files = ["./", "index.html", "css/show.css", "js/show.js", "img/eyes.jpg"] + [f"img/{f}.png" for g in (COV, FEL) for f, _ in g] + ["clips/math-sim.mp4", "clips/warden-call.mp4"]
-    h = hashlib.sha1()
+    files = ["./", "index.html", "css/show.css", "js/show.js", "img/eyes.jpg"] + [f"img/{f}.png" for g in (COV,) for f, _ in g] + ["clips/math-sim.mp4", "clips/warden-call.mp4"]
+    h = hashlib.sha1(b"v2-navigate-network-first")
     for f in files[1:]:
         h.update((ROOT / f).read_bytes())
     (ROOT / "sw.js").write_text(f'''/* Stark Showcase service worker: caches only this folder's own files. */
@@ -171,6 +171,7 @@ self.addEventListener("fetch", e => {{
   const r = e.request, u = new URL(r.url);
   if (r.method !== "GET" || u.origin !== self.location.origin) return;
   e.respondWith(caches.open(V).then(async c => {{
+    if (r.mode === "navigate") {{ try {{ const n = await fetch(r, {{ cache: "no-cache" }}); if (n.ok) {{ c.put(r, n.clone()); return n; }} }} catch (x) {{}} }}
     let m = await c.match(r, {{ ignoreSearch: true }});
     if (!m) {{ try {{ m = await fetch(r); if (m.ok && m.status === 200) c.put(r, m.clone()); return m; }} catch (x) {{ return (await c.match("index.html")) || Response.error(); }} }}
     const rg = r.headers.get("range");

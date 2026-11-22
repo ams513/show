@@ -1,11 +1,12 @@
 /* Stark Showcase service worker: caches only this folder's own files. */
-const V = "show-1f3c91ca86", FILES = ['./', 'index.html', 'css/show.css', 'js/show.js', 'img/eyes.jpg', 'img/cov-patients.png', 'img/cov-chart.png', 'img/cov-emergency.png', 'img/cov-emergency-phone.png', 'img/cov-outcomes.png', 'img/cov-todo.png', 'img/cov-safety.png', 'img/fel-home.png', 'img/fel-directory.png', 'img/fel-teams.png', 'img/fel-checkin.png', 'img/fel-giving.png', 'img/fel-statement.png', 'img/fel-phone.png', 'clips/math-sim.mp4', 'clips/warden-call.mp4'];
+const V = "show-1ad96b0249", FILES = ['./', 'index.html', 'css/show.css', 'js/show.js', 'img/eyes.jpg', 'img/cov-patients.png', 'img/cov-chart.png', 'img/cov-emergency.png', 'img/cov-emergency-phone.png', 'img/cov-outcomes.png', 'img/cov-todo.png', 'img/cov-safety.png', 'clips/math-sim.mp4', 'clips/warden-call.mp4'];
 self.addEventListener("install", e => { self.skipWaiting(); e.waitUntil(caches.open(V).then(c => Promise.all(FILES.map(f => c.add(f).catch(() => 0))))); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(k => Promise.all(k.filter(x => x !== V).map(x => caches.delete(x)))).then(() => self.clients.claim())); });
 self.addEventListener("fetch", e => {
   const r = e.request, u = new URL(r.url);
   if (r.method !== "GET" || u.origin !== self.location.origin) return;
   e.respondWith(caches.open(V).then(async c => {
+    if (r.mode === "navigate") { try { const n = await fetch(r, { cache: "no-cache" }); if (n.ok) { c.put(r, n.clone()); return n; } } catch (x) {} }
     let m = await c.match(r, { ignoreSearch: true });
     if (!m) { try { m = await fetch(r); if (m.ok && m.status === 200) c.put(r, m.clone()); return m; } catch (x) { return (await c.match("index.html")) || Response.error(); } }
     const rg = r.headers.get("range");
