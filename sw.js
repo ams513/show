@@ -1,5 +1,5 @@
 /* Stark Showcase service worker: caches only this folder's own files. */
-const V = "show-1ad96b0249", FILES = ['./', 'index.html', 'css/show.css', 'js/show.js', 'img/eyes.jpg', 'img/cov-patients.png', 'img/cov-chart.png', 'img/cov-emergency.png', 'img/cov-emergency-phone.png', 'img/cov-outcomes.png', 'img/cov-todo.png', 'img/cov-safety.png', 'clips/math-sim.mp4', 'clips/warden-call.mp4'];
+const V = "show-wm20261122", FILES = ['./', 'index.html', 'css/show.css', 'js/show.js', 'img/eyes.jpg', 'img/cov-patients.png', 'img/cov-chart.png', 'img/cov-emergency.png', 'img/cov-emergency-phone.png', 'img/cov-outcomes.png', 'img/cov-todo.png', 'img/cov-safety.png', 'clips/math-sim.mp4', 'clips/warden-call.mp4'];
 self.addEventListener("install", e => { self.skipWaiting(); e.waitUntil(caches.open(V).then(c => Promise.all(FILES.map(f => c.add(f).catch(() => 0))))); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(k => Promise.all(k.filter(x => x !== V).map(x => caches.delete(x)))).then(() => self.clients.claim())); });
 self.addEventListener("fetch", e => {
