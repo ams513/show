@@ -88,7 +88,7 @@ e = html.escape
 
 def beat_gallery(a):
     k = a["k"]
-    figs = "".join(f'<figure><img src="img/{f}.png" alt="{e(c)}" loading="lazy"><figcaption>{e(c)}</figcaption></figure>' for f, c in a["gallery"])
+    figs = "".join(f'<figure><img src="img/{f}.png" alt="{e(c)}"><figcaption>{e(c)}</figcaption></figure>' for f, c in a["gallery"])
     return f'<div class="gal" data-gal tabindex="0" aria-label="Screenshots, swipe sideways">{figs}</div><p class="gcount" data-gcount>1 / {len(a["gallery"])}</p>'
 
 
